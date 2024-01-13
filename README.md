@@ -6,6 +6,8 @@ FaceFusion
 [![Build Status](https://img.shields.io/github/actions/workflow/status/facefusion/facefusion/ci.yml.svg?branch=master)](https://github.com/facefusion/facefusion/actions?query=workflow:ci)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+colab version is live and fixed but do update me in mails when google intefers or bans code, i love the cat and mouse play with google moderators and the devops guy.
+ im thinking about hosting somewhere for free, just have to figure out how to put limitation on process which determined by time or time of video. contact me if you are good at it. i'll handle the hosting stuff
 
 Preview
 -------
@@ -16,10 +18,7 @@ Preview
 Installation
 ------------
 
-Be aware, the installation needs technical skills and is not for beginners. Please do not open platform and installation related issues on GitHub. We have a very helpful [Discord](https://join.facefusion.io) community that will guide you to complete the installation.
-
-Get started with the [installation](https://docs.facefusion.io/installation) guide.
-
+Be aware, the installation needs technical skills and is not for beginners. Please do not open platform and installation related issues on GitHub. i dont care what you do.
 
 Usage
 -----
