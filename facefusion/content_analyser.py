@@ -68,10 +68,8 @@ def prepare_frame(frame : Frame) -> Frame:
 	return frame
 
 
-def analyse_frame(frame: Frame) -> bool:
-    #  bypass NSFW check
-    return False
-
+def analyse_frame(frame : Frame) -> bool:
+	return False
 
 
 @lru_cache(maxsize = None)
