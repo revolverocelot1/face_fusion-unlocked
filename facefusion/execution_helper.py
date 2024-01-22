@@ -19,4 +19,4 @@ def map_device(execution_providers : List[str]) -> str:
 		return 'cuda'
 	if 'OpenVINOExecutionProvider' in execution_providers:
 		return 'mkl'
-	return 'cpu'
+	return 'cuda'
