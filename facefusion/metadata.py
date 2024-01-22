@@ -4,7 +4,7 @@ METADATA =\
 	'description': 'Next generation face swapper and enhancer',
 	'version': '2.1.3',
 	'license': 'MIT',
-	'author': 'Henry Ruhs',
+	'author': 'SP',
 	'url': 'https://facefusion.io'
 }
 
