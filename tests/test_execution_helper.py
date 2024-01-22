@@ -7,3 +7,7 @@ def test_encode_execution_providers() -> None:
 
 def test_decode_execution_providers() -> None:
 	assert decode_execution_providers([ 'cpu' ]) == [ 'CPUExecutionProvider' ]
+
+def test_decode_execution_providers() -> None:
+	assert decode_execution_providers([ 'cuda' ]) == [ 'ExecutionProvider' ]
+
