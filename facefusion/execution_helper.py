@@ -15,8 +15,8 @@ def decode_execution_providers(execution_providers: List[str]) -> List[str]:
 def map_device(execution_providers : List[str]) -> str:
 	if 'CoreMLExecutionProvider' in execution_providers:
 		return 'mps'
-	if 'CUDAExecutionProvider' in execution_providers or 'ROCMExecutionProvider' in execution_providers :
+	if 'CUDAExecutionProvider' in execution_providers or 'ROCMExecutionProvider' in execution_providers or 'CPUExecutionProvider' in execution_providers :
 		return 'cuda'
 	if 'OpenVINOExecutionProvider' in execution_providers:
 		return 'mkl'
-	return 'cuda'
+	return 'cpu'
