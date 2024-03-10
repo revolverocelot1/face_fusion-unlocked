@@ -17,13 +17,13 @@ def render() -> None:
 	global TEMP_FRAME_QUALITY_SLIDER
 
 	TEMP_FRAME_FORMAT_DROPDOWN = gradio.Dropdown(
-		label = wording.get('uis.temp_frame_format_dropdown'),
+		label = wording.get('temp_frame_format_dropdown_label'),
 		choices = facefusion.choices.temp_frame_formats,
 		value = facefusion.globals.temp_frame_format,
 		visible = is_video(facefusion.globals.target_path)
 	)
 	TEMP_FRAME_QUALITY_SLIDER = gradio.Slider(
-		label = wording.get('uis.temp_frame_quality_slider'),
+		label = wording.get('temp_frame_quality_slider_label'),
 		value = facefusion.globals.temp_frame_quality,
 		step = facefusion.choices.temp_frame_quality_range[1] - facefusion.choices.temp_frame_quality_range[0],
 		minimum = facefusion.choices.temp_frame_quality_range[0],
@@ -33,7 +33,7 @@ def render() -> None:
 
 
 def listen() -> None:
-	TEMP_FRAME_FORMAT_DROPDOWN.change(update_temp_frame_format, inputs = TEMP_FRAME_FORMAT_DROPDOWN)
+	TEMP_FRAME_FORMAT_DROPDOWN.select(update_temp_frame_format, inputs = TEMP_FRAME_FORMAT_DROPDOWN)
 	TEMP_FRAME_QUALITY_SLIDER.change(update_temp_frame_quality, inputs = TEMP_FRAME_QUALITY_SLIDER)
 	target_video = get_ui_component('target_video')
 	if target_video:

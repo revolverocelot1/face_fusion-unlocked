@@ -7,9 +7,9 @@ import facefusion.choices
 from facefusion import wording
 from facefusion.face_store import clear_static_faces, clear_reference_faces
 from facefusion.vision import get_video_frame, read_static_image, normalize_frame_color
-from facefusion.filesystem import is_image, is_video
 from facefusion.face_analyser import get_many_faces
-from facefusion.typing import VisionFrame, FaceSelectorMode
+from facefusion.typing import Frame, FaceSelectorMode
+from facefusion.filesystem import is_image, is_video
 from facefusion.uis.core import get_ui_component, register_ui_component
 from facefusion.uis.typing import ComponentName
 
@@ -25,7 +25,7 @@ def render() -> None:
 
 	reference_face_gallery_args: Dict[str, Any] =\
 	{
-		'label': wording.get('uis.reference_face_gallery'),
+		'label': wording.get('reference_face_gallery_label'),
 		'object_fit': 'cover',
 		'columns': 8,
 		'allow_preview': False,
@@ -38,13 +38,13 @@ def render() -> None:
 		reference_frame = get_video_frame(facefusion.globals.target_path, facefusion.globals.reference_frame_number)
 		reference_face_gallery_args['value'] = extract_gallery_frames(reference_frame)
 	FACE_SELECTOR_MODE_DROPDOWN = gradio.Dropdown(
-		label = wording.get('uis.face_selector_mode_dropdown'),
+		label = wording.get('face_selector_mode_dropdown_label'),
 		choices = facefusion.choices.face_selector_modes,
 		value = facefusion.globals.face_selector_mode
 	)
 	REFERENCE_FACE_POSITION_GALLERY = gradio.Gallery(**reference_face_gallery_args)
 	REFERENCE_FACE_DISTANCE_SLIDER = gradio.Slider(
-		label = wording.get('uis.reference_face_distance_slider'),
+		label = wording.get('reference_face_distance_slider_label'),
 		value = facefusion.globals.reference_face_distance,
 		step = facefusion.choices.reference_face_distance_range[1] - facefusion.choices.reference_face_distance_range[0],
 		minimum = facefusion.choices.reference_face_distance_range[0],
@@ -57,7 +57,7 @@ def render() -> None:
 
 
 def listen() -> None:
-	FACE_SELECTOR_MODE_DROPDOWN.change(update_face_selector_mode, inputs = FACE_SELECTOR_MODE_DROPDOWN, outputs = [ REFERENCE_FACE_POSITION_GALLERY, REFERENCE_FACE_DISTANCE_SLIDER ])
+	FACE_SELECTOR_MODE_DROPDOWN.select(update_face_selector_mode, inputs = FACE_SELECTOR_MODE_DROPDOWN, outputs = [ REFERENCE_FACE_POSITION_GALLERY, REFERENCE_FACE_DISTANCE_SLIDER ])
 	REFERENCE_FACE_POSITION_GALLERY.select(clear_and_update_reference_face_position)
 	REFERENCE_FACE_DISTANCE_SLIDER.change(update_reference_face_distance, inputs = REFERENCE_FACE_DISTANCE_SLIDER)
 	multi_component_names : List[ComponentName] =\
@@ -135,31 +135,30 @@ def clear_and_update_reference_position_gallery() -> gradio.Gallery:
 
 
 def update_reference_position_gallery() -> gradio.Gallery:
-	gallery_vision_frames = []
+	gallery_frames = []
 	if is_image(facefusion.globals.target_path):
-		temp_vision_frame = read_static_image(facefusion.globals.target_path)
-		gallery_vision_frames = extract_gallery_frames(temp_vision_frame)
+		reference_frame = read_static_image(facefusion.globals.target_path)
+		gallery_frames = extract_gallery_frames(reference_frame)
 	if is_video(facefusion.globals.target_path):
-		temp_vision_frame = get_video_frame(facefusion.globals.target_path, facefusion.globals.reference_frame_number)
-		gallery_vision_frames = extract_gallery_frames(temp_vision_frame)
-	if gallery_vision_frames:
-		return gradio.Gallery(value = gallery_vision_frames)
+		reference_frame = get_video_frame(facefusion.globals.target_path, facefusion.globals.reference_frame_number)
+		gallery_frames = extract_gallery_frames(reference_frame)
+	if gallery_frames:
+		return gradio.Gallery(value = gallery_frames)
 	return gradio.Gallery(value = None)
 
 
-def extract_gallery_frames(temp_vision_frame : VisionFrame) -> List[VisionFrame]:
-	gallery_vision_frames = []
-	faces = get_many_faces(temp_vision_frame)
-
+def extract_gallery_frames(reference_frame : Frame) -> List[Frame]:
+	crop_frames = []
+	faces = get_many_faces(reference_frame)
 	for face in faces:
-		start_x, start_y, end_x, end_y = map(int, face.bounding_box)
+		start_x, start_y, end_x, end_y = map(int, face.bbox)
 		padding_x = int((end_x - start_x) * 0.25)
 		padding_y = int((end_y - start_y) * 0.25)
 		start_x = max(0, start_x - padding_x)
 		start_y = max(0, start_y - padding_y)
 		end_x = max(0, end_x + padding_x)
 		end_y = max(0, end_y + padding_y)
-		crop_vision_frame = temp_vision_frame[start_y:end_y, start_x:end_x]
-		crop_vision_frame = normalize_frame_color(crop_vision_frame)
-		gallery_vision_frames.append(crop_vision_frame)
-	return gallery_vision_frames
+		crop_frame = reference_frame[start_y:end_y, start_x:end_x]
+		crop_frame = normalize_frame_color(crop_frame)
+		crop_frames.append(crop_frame)
+	return crop_frames

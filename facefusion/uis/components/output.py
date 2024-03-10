@@ -3,11 +3,10 @@ import gradio
 
 import facefusion.globals
 from facefusion import wording
-from facefusion.core import conditional_process
-from facefusion.memory import limit_system_memory
+from facefusion.core import limit_resources, conditional_process
 from facefusion.uis.core import get_ui_component
 from facefusion.normalizer import normalize_output_path
-from facefusion.filesystem import clear_temp, is_image, is_video
+from facefusion.filesystem import is_image, is_video, clear_temp
 
 OUTPUT_IMAGE : Optional[gradio.Image] = None
 OUTPUT_VIDEO : Optional[gradio.Video] = None
@@ -22,19 +21,19 @@ def render() -> None:
 	global OUTPUT_CLEAR_BUTTON
 
 	OUTPUT_IMAGE = gradio.Image(
-		label = wording.get('uis.output_image_or_video'),
+		label = wording.get('output_image_or_video_label'),
 		visible = False
 	)
 	OUTPUT_VIDEO = gradio.Video(
-		label = wording.get('uis.output_image_or_video')
+		label = wording.get('output_image_or_video_label')
 	)
 	OUTPUT_START_BUTTON = gradio.Button(
-		value = wording.get('uis.start_button'),
+		value = wording.get('start_button_label'),
 		variant = 'primary',
 		size = 'sm'
 	)
 	OUTPUT_CLEAR_BUTTON = gradio.Button(
-		value = wording.get('uis.clear_button'),
+		value = wording.get('clear_button_label'),
 		size = 'sm'
 	)
 
@@ -48,8 +47,7 @@ def listen() -> None:
 
 def start(output_path : str) -> Tuple[gradio.Image, gradio.Video]:
 	facefusion.globals.output_path = normalize_output_path(facefusion.globals.source_paths, facefusion.globals.target_path, output_path)
-	if facefusion.globals.system_memory_limit > 0:
-		limit_system_memory(facefusion.globals.system_memory_limit)
+	limit_resources()
 	conditional_process()
 	if is_image(facefusion.globals.output_path):
 		return gradio.Image(value = facefusion.globals.output_path, visible = True), gradio.Video(value = None, visible = False)
