@@ -62,48 +62,30 @@ def is_directory(directory_path : str) -> bool:
 	return bool(directory_path and os.path.isdir(directory_path))
 
 
-def is_audio(audio_path : str) -> bool:
-	return is_file(audio_path) and filetype.helpers.is_audio(audio_path)
-
-
-def has_audio(audio_paths : List[str]) -> bool:
-	if audio_paths:
-		return any(is_audio(audio_path) for audio_path in audio_paths)
+def is_image(image_path : str) -> bool:
+	if is_file(image_path):
+		return filetype.helpers.is_image(image_path)
 	return False
 
 
-def is_image(image_path : str) -> bool:
-	return is_file(image_path) and filetype.helpers.is_image(image_path)
-
-
-def has_image(image_paths: List[str]) -> bool:
+def are_images(image_paths : List[str]) -> bool:
 	if image_paths:
-		return any(is_image(image_path) for image_path in image_paths)
+		return all(is_image(image_path) for image_path in image_paths)
 	return False
 
 
 def is_video(video_path : str) -> bool:
-	return is_file(video_path) and filetype.helpers.is_video(video_path)
-
-
-def filter_audio_paths(paths : List[str]) -> List[str]:
-	if paths:
-		return [ path for path in paths if is_audio(path) ]
-	return []
-
-
-def filter_image_paths(paths : List[str]) -> List[str]:
-	if paths:
-		return [ path for path in paths if is_image(path) ]
-	return []
+	if is_file(video_path):
+		return filetype.helpers.is_video(video_path)
+	return False
 
 
 def resolve_relative_path(path : str) -> str:
 	return os.path.abspath(os.path.join(os.path.dirname(__file__), path))
 
 
-def list_directory(directory_path : str) -> Optional[List[str]]:
-	if is_directory(directory_path):
-		files = os.listdir(directory_path)
-		return sorted([ Path(file).stem for file in files if not Path(file).stem.startswith(('.', '__')) ])
+def list_module_names(path : str) -> Optional[List[str]]:
+	if os.path.exists(path):
+		files = os.listdir(path)
+		return [ Path(file).stem for file in files if not Path(file).stem.startswith(('.', '__')) ]
 	return None

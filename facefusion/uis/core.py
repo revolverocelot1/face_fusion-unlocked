@@ -28,12 +28,10 @@ def load_ui_layout_module(ui_layout : str) -> Any:
 			if not hasattr(ui_layout_module, method_name):
 				raise NotImplementedError
 	except ModuleNotFoundError as exception:
-		logger.error(wording.get('ui_layout_not_loaded').format(ui_layout=ui_layout), __name__.upper())
 		logger.debug(exception.msg, __name__.upper())
-		sys.exit(1)
+		sys.exit(wording.get('ui_layout_not_loaded').format(ui_layout = ui_layout))
 	except NotImplementedError:
-		logger.error(wording.get('ui_layout_not_implemented').format(ui_layout = ui_layout), __name__.upper())
-		sys.exit(1)
+		sys.exit(wording.get('ui_layout_not_implemented').format(ui_layout = ui_layout))
 	return ui_layout_module
 
 
